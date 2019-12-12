@@ -10,6 +10,7 @@ import java.util.HashMap;
 import javax.websocket.server.PathParam;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,5 +49,17 @@ public class StoreController {
         	returnBody.put("message", "Name cannot be empty");
         	return ResponseEntity.badRequest().body(returnBody);
         }
+    }
+    
+    @DeleteMapping(path = "/stores/{id}")
+    public ResponseEntity<?> deleteStore(@PathVariable("id") Integer id) {
+        try {
+        	storeService.delete(id);
+        	return ResponseEntity.noContent().build();
+		} catch (ModelNotFoundException e) {
+			HashMap<String, String> returnBody = new HashMap<String, String>();
+        	returnBody.put("message", "Id must be valid");
+        	return ResponseEntity.badRequest().body(returnBody);
+		}
     }
 }

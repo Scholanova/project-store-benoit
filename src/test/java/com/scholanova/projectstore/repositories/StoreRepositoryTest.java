@@ -83,4 +83,36 @@ class StoreRepositoryTest {
         jdbcTemplate.execute(
                 String.format(query, store.getId(), store.getName()));
     }
+    
+    
+    @Nested
+    class Test_delete {
+
+        @Test
+        void whenNoStoresWithThatId_thenThrowsException() throws Exception {
+            // Given
+            Integer id = 1;
+
+            // When & Then
+            assertThrows(ModelNotFoundException.class, () -> {
+                storeRepository.delete(id);
+            });
+        }
+
+        @Test
+        void whenStoreExists_thenReturnsNothing() throws Exception {
+            // Given
+            Integer id = 1;
+            Store store = new Store(id, "Carrefour");
+            insertStore(store);
+
+            // When
+            storeRepository.delete(id);
+
+            // Then
+            assertThrows(ModelNotFoundException.class, () -> {
+                storeRepository.getById(id);
+            });
+        }
+    }
 }

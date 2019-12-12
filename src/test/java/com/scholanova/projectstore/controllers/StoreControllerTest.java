@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.*;
 
@@ -154,10 +156,6 @@ class StoreControllerTest {
             );
             Integer storeIdToGet = idArgumentCaptor.getValue();
             assertThat(storeIdToGet).isEqualTo(1);
-            
-            
-            
-            
         }
     	@Test
         void Test_getStore_givenInvalidId_thenReturnStoreById() throws Exception {
@@ -192,4 +190,71 @@ class StoreControllerTest {
             assertThat(responseEntity.getStatusCode()).isEqualTo(BAD_REQUEST);
             assertThat(responseEntity.getBody()).isEqualTo(errorBody);
         }
+    	
+    	
+    	
+    	
+    	@Test
+        void Test_delete_Store_givenValidId_thenReturn204() throws Exception {
+            // given
+            String url = "http://localhost:{port}/stores/{id}";
+            
+            Integer id = 1;
+            
+            Map<String, String> urlVariables = new HashMap<>();
+            urlVariables.put("port", String.valueOf(port));
+            urlVariables.put("id", String.valueOf(id));
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+ 
+            HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+            
+            
+            doNothing().when(storeService).delete(id);
+            
+            // When
+            ResponseEntity responseEntity = template.exchange(url,
+                    HttpMethod.DELETE,
+                    httpEntity,
+                    String.class,
+                    urlVariables);
+
+            // Then
+            assertThat(responseEntity.getStatusCode()).isEqualTo(NO_CONTENT);
+          
+        }
+//    	@Test
+//        void Test_getStore_givenInvalidId_thenReturnStoreById() throws Exception {
+//    		// given
+//            String url = "http://localhost:{port}/stores/{id}";
+//
+//            Map<String, String> urlVariables = new HashMap<>();
+//            urlVariables.put("port", String.valueOf(port));
+//            urlVariables.put("id", String.valueOf(port));
+//
+//            Integer id = 1;
+//            
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.APPLICATION_JSON);
+//
+//            HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+//            
+//            Store createdStore = new Store(id, "Boulangerie");
+//            when(storeService.getById(idArgumentCaptor.capture())).thenThrow(new ModelNotFoundException());
+//            // When
+//            ResponseEntity responseEntity = template.exchange(url,
+//                    HttpMethod.GET,
+//                    httpEntity,
+//                    String.class,
+//                    urlVariables);
+//
+//            // Then
+//            String errorBody = "{" +
+//                    "\"message\":\"Id must be valid\"" +
+//                    "}";
+//            
+//            assertThat(responseEntity.getStatusCode()).isEqualTo(BAD_REQUEST);
+//            assertThat(responseEntity.getBody()).isEqualTo(errorBody);
+//        }
 }

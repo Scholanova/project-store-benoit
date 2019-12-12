@@ -34,4 +34,9 @@ public class StoreService {
     	
         return storeRepository.getById(id);
     }
+    
+    public void delete(Integer id) throws ModelNotFoundException {
+    	
+        storeRepository.delete(id);
+    }
 }

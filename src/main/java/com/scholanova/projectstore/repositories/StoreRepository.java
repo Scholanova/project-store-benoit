@@ -16,46 +16,59 @@ import java.util.Map;
 @Repository
 public class StoreRepository {
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
+	private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    public StoreRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+	public StoreRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+	}
 
-    public Store getById(Integer id) throws ModelNotFoundException {
-        String query = "SELECT ID as id, " +
-                "NAME AS name " +
-                "FROM STORES " +
-                "WHERE ID = :id";
+	public Store getById(Integer id) throws ModelNotFoundException {
+		String query = "SELECT ID as id, " +
+				"NAME AS name " +
+				"FROM STORES " +
+				"WHERE ID = :id";
 
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("id", id);
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("id", id);
 
-        return jdbcTemplate.query(query,
-                parameters,
-                new BeanPropertyRowMapper<>(Store.class))
-                .stream()
-                .findFirst()
-                .orElseThrow(ModelNotFoundException::new);
-    }
+		return jdbcTemplate.query(query,
+				parameters,
+				new BeanPropertyRowMapper<>(Store.class))
+				.stream()
+				.findFirst()
+				.orElseThrow(ModelNotFoundException::new);
+	}
 
-    public Store create(Store storeToCreate) {
-        KeyHolder holder = new GeneratedKeyHolder();
+	public Store create(Store storeToCreate) {
+		KeyHolder holder = new GeneratedKeyHolder();
 
-        String query = "INSERT INTO STORES " +
-                "(NAME) VALUES " +
-                "(:name)";
+		String query = "INSERT INTO STORES " +
+				"(NAME) VALUES " +
+				"(:name)";
 
-        SqlParameterSource parameters = new MapSqlParameterSource()
-                .addValue("name", storeToCreate.getName());
+		SqlParameterSource parameters = new MapSqlParameterSource()
+				.addValue("name", storeToCreate.getName());
 
-        jdbcTemplate.update(query, parameters, holder);
+		jdbcTemplate.update(query, parameters, holder);
 
-        Integer newlyCreatedId = (Integer) holder.getKeys().get("ID");
-        try {
-            return this.getById(newlyCreatedId);
-        } catch (ModelNotFoundException e) {
-            return null;
-        }
-    }
+		Integer newlyCreatedId = (Integer) holder.getKeys().get("ID");
+		try {
+			return this.getById(newlyCreatedId);
+		} catch (ModelNotFoundException e) {
+			return null;
+		}
+	}
+
+	public void delete(Integer id) throws ModelNotFoundException{
+
+		String query = "DELETE FROM STORES " + 
+				"WHERE ID = :id";
+
+		SqlParameterSource parameters = new MapSqlParameterSource()
+				.addValue("id", id);
+		int nbLinesModified = jdbcTemplate.update(query, parameters);
+		if(nbLinesModified == 0) {
+			throw new ModelNotFoundException();
+		}
+	}
 }
