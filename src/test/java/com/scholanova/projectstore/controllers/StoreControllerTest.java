@@ -1,5 +1,6 @@
 package com.scholanova.projectstore.controllers;
 
+import com.scholanova.projectstore.exceptions.StoreNameCannotBeEmptyException;
 import com.scholanova.projectstore.models.Store;
 import com.scholanova.projectstore.services.StoreService;
 import org.junit.jupiter.api.Nested;
@@ -57,7 +58,7 @@ class StoreControllerTest {
             HttpEntity<String> httpEntity = new HttpEntity<>(requestJson, headers);
 
             Store createdStore = new Store(123, "Boulangerie");
-            when(storeService.create(createStoreArgumentCaptor.capture())).thenReturn(createdStore);
+            when(storeService.create(createStoreArgumentCaptor.capture())).thenThrow(new StoreNameCannotBeEmptyException());
 
             // When
             ResponseEntity responseEntity = template.exchange(url,
