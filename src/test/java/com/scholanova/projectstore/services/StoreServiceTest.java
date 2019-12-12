@@ -1,5 +1,6 @@
 package com.scholanova.projectstore.services;
 
+import com.scholanova.projectstore.exceptions.ModelNotFoundException;
 import com.scholanova.projectstore.exceptions.StoreNameCannotBeEmptyException;
 import com.scholanova.projectstore.models.Store;
 import com.scholanova.projectstore.repositories.StoreRepository;
@@ -16,48 +17,77 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class StoreServiceTest {
 
-    private StoreService storeService;
+	private StoreService storeService;
 
-    @Mock
-    private StoreRepository storeRepository;
+	@Mock
+	private StoreRepository storeRepository;
 
-    @BeforeEach
-    void setUp() {
-        storeService = new StoreService(storeRepository);
-    }
+	@BeforeEach
+	void setUp() {
+		storeService = new StoreService(storeRepository);
+	}
 
-    @Test
-    void givenNoStoreName_whenCreated_failsWithNoEmptyStoreNameError() {
-        // GIVEN
-        Integer id = null;
-        String name = null;
+	@Test
+	void givenNoStoreName_whenCreated_failsWithNoEmptyStoreNameError() {
+		// GIVEN
+		Integer id = null;
+		String name = null;
 
-        Store emptyNameStore = new Store(id, name);
+		Store emptyNameStore = new Store(id, name);
 
-        // WHEN
-        assertThrows(StoreNameCannotBeEmptyException.class, () -> {
-            storeService.create(emptyNameStore);
-        });
+		// WHEN
+		assertThrows(StoreNameCannotBeEmptyException.class, () -> {
+			storeService.create(emptyNameStore);
+		});
 
-        // THEN
-        verify(storeRepository, never()).create(emptyNameStore);
-    }
+		// THEN
+		verify(storeRepository, never()).create(emptyNameStore);
+	}
 
-    @Test
-    void givenCorrectStore_whenCreated_savesStoreInRepository() throws Exception {
-        // GIVEN
-        Integer id = 1234;
-        String name = "BHV";
+	@Test
+	void givenCorrectStore_whenCreated_savesStoreInRepository() throws Exception {
+		// GIVEN
+		Integer id = 1234;
+		String name = "BHV";
 
-        Store correctStore = new Store(null, name);
-        Store savedStore = new Store(id, name);
-        when(storeRepository.create(correctStore)).thenReturn(savedStore);
+		Store correctStore = new Store(null, name);
+		Store savedStore = new Store(id, name);
+		when(storeRepository.create(correctStore)).thenReturn(savedStore);
 
-        // WHEN
-        Store returnedStore = storeService.create(correctStore);
+		// WHEN
+		Store returnedStore = storeService.create(correctStore);
 
-        // THEN
-        verify(storeRepository, atLeastOnce()).create(correctStore);
-        assertThat(returnedStore).isEqualTo(savedStore);
-    }
+		// THEN
+		verify(storeRepository, atLeastOnce()).create(correctStore);
+		assertThat(returnedStore).isEqualTo(savedStore);
+	}
+
+
+	@Test
+	void givenCorrectId_whenDisplay_getStoreFromRepository() throws Exception {
+		// GIVEN
+		Integer id1 = 2;	
+		Store storeA = new Store(2,"nomauchoix");
+		when(storeRepository.getById(id1)).thenReturn(storeA);
+		
+		//WHEN
+		Store returnedStore = storeService.getById(id1);
+		
+		//THEN
+		verify(storeRepository,atLeastOnce()).getById(id1);
+		assertThat(returnedStore).isEqualTo(storeA);
+
+	}
+	@Test
+	void givenNotExistingId_whenDisplay_getModelNotFoundException() throws Exception {
+		// GIVEN
+		Integer id1 = 1;
+		when(storeRepository.getById(id1)).thenThrow(new ModelNotFoundException());
+		
+		// WHEN
+		// THEN
+		assertThrows(ModelNotFoundException.class, () -> {
+			storeService.getById(id1);
+		});
+	}
 }

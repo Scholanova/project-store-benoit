@@ -1,11 +1,17 @@
 package com.scholanova.projectstore.controllers;
 
+import com.scholanova.projectstore.exceptions.ModelNotFoundException;
 import com.scholanova.projectstore.exceptions.StoreNameCannotBeEmptyException;
 import com.scholanova.projectstore.models.Store;
 import com.scholanova.projectstore.services.StoreService;
 
+import java.util.HashMap;
+
+import javax.websocket.server.PathParam;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,18 +26,27 @@ public class StoreController {
     }
 
     @GetMapping(path = "/stores/{id}")
-    public Store getStation() {
-        return null;
+    public ResponseEntity<?> getStore(@PathVariable("id") Integer id)throws ModelNotFoundException {
+        try {
+        	return ResponseEntity.ok().body(storeService.getById(id));
+		} catch (ModelNotFoundException e) {
+			// TODO Auto-generated catch block
+			HashMap<String, String> returnBody = new HashMap<String, String>();
+        	returnBody.put("message", "Id must be valid");
+        	return ResponseEntity.badRequest().body(returnBody);
+		}
     }
 
     @PostMapping(path = "/stores")
-    public ResponseEntity<Store> createStore(@RequestBody Store store) throws StoreNameCannotBeEmptyException {
+    public ResponseEntity<?> createStore(@RequestBody Store store) throws StoreNameCannotBeEmptyException {
         try{
         	Store createdStore = storeService.create(store);
         	return ResponseEntity.ok()
         			.body(createdStore);
         }catch(StoreNameCannotBeEmptyException e) {
-        	return ResponseEntity.status(400).body(null);
+        	HashMap<String, String> returnBody = new HashMap<String, String>();
+        	returnBody.put("message", "Name cannot be empty");
+        	return ResponseEntity.badRequest().body(returnBody);
         }
     }
 }
