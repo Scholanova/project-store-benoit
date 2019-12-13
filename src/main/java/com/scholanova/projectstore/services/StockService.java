@@ -24,7 +24,7 @@ public class StockService {
         if (isNameMissing(stock)) {
             throw new StockNameCannotBeEmptyException();
         }
-        if (!isTypeValid(stock)) {
+        if (isTypeUnValid(stock)) {
             throw new StockTypeIsUnValidException();
         }
         if (isValueInferiorThan0(stock)) {
@@ -51,9 +51,14 @@ public class StockService {
 				stock.getValue()< 1;
 	}
 
-	private boolean isTypeValid(Stock stock) {
-		return stock.getType().matches("Fruit") ||
-				 stock.getType().matches("Nail");
+	private boolean isTypeUnValid(Stock stock) {
+		if (stock.getType() == null) {
+			return true;
+		}
+		if ( stock.getType().matches("Fruit") || stock.getType().matches("Nail")) {
+			return false;
+		}
+		return true;
 	}
 
 	private boolean isNameMissing(Stock stock) {
