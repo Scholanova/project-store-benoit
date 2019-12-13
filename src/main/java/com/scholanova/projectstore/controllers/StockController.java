@@ -12,9 +12,7 @@ import com.scholanova.projectstore.exceptions.StockNameCannotBeEmptyException;
 import com.scholanova.projectstore.exceptions.StockStoreUnvalidException;
 import com.scholanova.projectstore.exceptions.StockTypeIsUnValidException;
 import com.scholanova.projectstore.exceptions.StockValueInferiorThan0Exception;
-import com.scholanova.projectstore.exceptions.StoreNameCannotBeEmptyException;
 import com.scholanova.projectstore.models.Stock;
-import com.scholanova.projectstore.models.Store;
 import com.scholanova.projectstore.services.StockService;
 
 @RestController
