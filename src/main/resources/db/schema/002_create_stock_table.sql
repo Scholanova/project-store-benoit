@@ -7,6 +7,6 @@ CREATE TABLE IF NOT EXISTS STOCKS (
   TYPE                VARCHAR(255)    NOT NULL,
   VALUE               INTEGER    	  NOT NULL,
   STORE_ID            INTEGER    	  NOT NULL,
-  PRIMARY KEY (ID),
-  FOREIGN KEY (store_id) REFERENCES STORES (id)
+  PRIMARY KEY (ID)--,
+  --FOREIGN KEY (store_id) REFERENCES STORES (id)
 );

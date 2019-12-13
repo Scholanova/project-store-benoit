@@ -7,6 +7,8 @@ public class Stock {
     private Integer value;
     private Integer store_id;
     
+    public Stock() {
+    }
     public Stock(Integer id, String name, String type, Integer value, Integer store_id) {
     	this.id = id;
         this.name = name;

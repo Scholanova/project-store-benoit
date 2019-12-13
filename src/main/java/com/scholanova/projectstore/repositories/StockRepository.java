@@ -44,11 +44,11 @@ public class StockRepository {
 		}
 	}
 
-	private Stock getById(Integer id) throws ModelNotFoundException{
+	public Stock getById(Integer id) throws ModelNotFoundException{
 		String query = "SELECT ID as id, " +
-				"NAME AS name " +
-				"TYPE AS type " +
-				"VALUE AS value " +
+				"NAME AS name, " +
+				"TYPE AS type, " +
+				"VALUE AS value, " +
 				"STORE_ID AS store_id " +
 				"FROM STOCKS " +
 				"WHERE ID = :id";
