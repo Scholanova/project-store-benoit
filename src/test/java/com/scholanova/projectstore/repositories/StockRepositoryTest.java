@@ -39,7 +39,7 @@ public class StockRepositoryTest {
 
 	            // When & Then
 	            assertThrows(ModelNotFoundException.class, () -> {
-	            	stockRepository.getById(id);
+	            	stockRepository.getById(200,id);
 	            });
 	        }
 
@@ -51,9 +51,12 @@ public class StockRepositoryTest {
 	            insertStock(stock);
 
 	            // When
-	            Stock extractedStock = stockRepository.getById(id);
+	            Stock extractedStock = stockRepository.getById(stock.getId(),id);
 
 	            // Then
+
+	            System.out.println("test");
+	            System.out.println(extractedStock);
 	            assertThat(extractedStock).isEqualToComparingFieldByField(stock);
 	        }
 	    }
