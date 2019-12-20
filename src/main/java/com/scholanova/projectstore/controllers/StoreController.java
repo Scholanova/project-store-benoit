@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -55,6 +56,19 @@ public class StoreController {
     public ResponseEntity<?> deleteStore(@PathVariable("id") Integer id) {
         try {
         	storeService.delete(id);
+        	return ResponseEntity.noContent().build();
+		} catch (ModelNotFoundException e) {
+			HashMap<String, String> returnBody = new HashMap<String, String>();
+        	returnBody.put("message", "Id must be valid");
+        	return ResponseEntity.badRequest().body(returnBody);
+		}
+    }
+    
+    @PutMapping(path = "/stores/{id}")
+    public ResponseEntity<?> updateStore(@PathVariable("id") Integer id, @RequestBody Store store ) throws StoreNameCannotBeEmptyException {
+        try {
+        	Store storeToUpdate = new Store(id,store.getName());
+        	storeService.update(storeToUpdate);
         	return ResponseEntity.noContent().build();
 		} catch (ModelNotFoundException e) {
 			HashMap<String, String> returnBody = new HashMap<String, String>();

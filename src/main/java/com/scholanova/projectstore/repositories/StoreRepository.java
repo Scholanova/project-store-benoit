@@ -23,10 +23,13 @@ public class StoreRepository {
 	}
 
 	public Store getById(Integer id) throws ModelNotFoundException {
-		String query = "SELECT ID as id, " +
-				"NAME AS name " +
-				"FROM STORES " +
-				"WHERE ID = :id";
+		String query = "SELECT STORES.ID as id, " +
+				"STORES.NAME AS name " +
+				"SUM(STOCKS.VALUE) AS value " +
+				"FROM STORES " + 
+				"LEFT JOIN STOCKS ON STOCKS.STORE_ID = STORES.ID " +
+				"WHERE STORES.ID = :id " +
+				"GROUP BY STORES.ID,STORES.NAME";
 
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("id", id);
@@ -66,6 +69,21 @@ public class StoreRepository {
 
 		SqlParameterSource parameters = new MapSqlParameterSource()
 				.addValue("id", id);
+		int nbLinesModified = jdbcTemplate.update(query, parameters);
+		if(nbLinesModified == 0) {
+			throw new ModelNotFoundException();
+		}
+	}
+	
+	public void update(Store store) throws ModelNotFoundException{
+
+		String query = "UPDATE STORES " + 
+				"SET NAME = :newName " +
+				"WHERE ID = :id";
+
+		SqlParameterSource parameters = new MapSqlParameterSource()
+				.addValue("id", store.getId())
+				.addValue("newName", store.getName());
 		int nbLinesModified = jdbcTemplate.update(query, parameters);
 		if(nbLinesModified == 0) {
 			throw new ModelNotFoundException();

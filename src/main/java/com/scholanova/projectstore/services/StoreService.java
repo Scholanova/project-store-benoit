@@ -39,4 +39,11 @@ public class StoreService {
     	
         storeRepository.delete(id);
     }
+    
+    public void update(Store store) throws ModelNotFoundException,StoreNameCannotBeEmptyException {
+    	if (isNameMissing(store)) {
+            throw new StoreNameCannotBeEmptyException();
+        }
+        storeRepository.update(store);
+    }
 }

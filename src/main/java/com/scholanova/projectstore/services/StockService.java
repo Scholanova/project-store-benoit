@@ -1,5 +1,8 @@
 package com.scholanova.projectstore.services;
 
+import java.awt.List;
+import java.util.ArrayList;
+
 import org.springframework.stereotype.Service;
 
 import com.scholanova.projectstore.exceptions.ModelNotFoundException;
@@ -64,5 +67,13 @@ public class StockService {
 	private boolean isNameMissing(Stock stock) {
 		return stock.getName() == null ||
 				stock.getName().trim().length() == 0;
+	}
+	
+	public void delete(Integer store_id,Integer stock_id ) throws ModelNotFoundException {
+		stockRepository.delete(store_id,stock_id);
+	}
+
+	public ArrayList getAllByStoreId(Integer store_id) {
+		return stockRepository.getAllByStoreId(store_id);
 	}
 }
