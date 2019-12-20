@@ -76,4 +76,8 @@ public class StockService {
 	public ArrayList getAllByStoreId(Integer store_id) {
 		return stockRepository.getAllByStoreId(store_id);
 	}
+	
+	public ArrayList getAllByStoreId(Integer store_id) {
+		return stockRepository.getAllByStoreId(store_id);
+	}
 }

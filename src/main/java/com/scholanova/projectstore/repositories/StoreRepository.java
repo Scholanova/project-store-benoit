@@ -25,7 +25,7 @@ public class StoreRepository {
 	public Store getById(Integer id) throws ModelNotFoundException {
 		String query = "SELECT STORES.ID as id, " +
 				"STORES.NAME AS name " +
-				"SUM(STOCKS.VALUE) AS value " +
+				"isnull(SUM(STOCKS.VALUE),0) AS value " +
 				"FROM STORES " + 
 				"LEFT JOIN STOCKS ON STOCKS.STORE_ID = STORES.ID " +
 				"WHERE STORES.ID = :id " +
